@@ -17,6 +17,10 @@ public class Note {
 	@ManyToOne(className = "com.clarionmedia.infinitumdemo.domain.Course", column = "course", name = "noteCourse")
 	private Course mCourse;
 	
+	public Note() {
+		mCreated = new Date();
+	}
+	
 	public long getId() {
 		return mId;
 	}
