@@ -1,9 +1,8 @@
 package com.clarionmedia.infinitumdemo.ui.activity;
 
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,17 +10,19 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.clarionmedia.infinitum.activity.InfinitumListActivity;
 import com.clarionmedia.infinitum.activity.annotation.InjectLayout;
 import com.clarionmedia.infinitum.orm.Session;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext.SessionType;
+import com.clarionmedia.infinitum.ui.widget.impl.DataBoundAdapter;
 import com.clarionmedia.infinitumdemo.R;
 import com.clarionmedia.infinitumdemo.domain.Note;
-import com.clarionmedia.infinitumdemo.ui.widget.NoteAdapter;
 
 @InjectLayout(R.layout.activity_sqlite)
 public class SqliteActivity extends InfinitumListActivity {
@@ -34,7 +35,6 @@ public class SqliteActivity extends InfinitumListActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_sqlite, menu);
 		return true;
 	}
@@ -49,14 +49,22 @@ public class SqliteActivity extends InfinitumListActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void populateNotes() {
 		InfinitumOrmContext orm = getInfinitumContext().getChildContext(InfinitumOrmContext.class);
 		Session session = orm.getSession(SessionType.SQLITE);
-		session.open();
-		List<Note> notes = session.createCriteria(Note.class).list();
-		setListAdapter(new NoteAdapter(this, R.id.note_name, notes));
-		session.close();
+		DataBoundAdapter<Note> adapter = new DataBoundAdapter<Note>(orm, R.layout.layout_note_row, R.id.note_name, session.createCriteria(Note.class)) {
+			public View getView(int position, View convertView, ViewGroup parent) {
+				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				View rowView = inflater.inflate(R.layout.layout_note_row, parent, false);
+				Note note = getItem(position);
+				TextView textView = (TextView) rowView.findViewById(R.id.note_name);
+				textView.setText(note.getName());
+				return rowView;
+			}
+		};
+		adapter.bind();
+		setListAdapter(adapter);
 	}
 
 	private Dialog createNewNoteDialog() {
