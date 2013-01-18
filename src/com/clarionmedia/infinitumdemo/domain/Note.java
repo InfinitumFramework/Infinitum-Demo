@@ -60,5 +60,38 @@ public class Note {
 	public void setCourse(Course course) {
 		mCourse = course;
 	}
+	
+	@Override
+	public int hashCode() {
+		final int PRIME = 31;
+		int hash = 7;
+		hash = hash * PRIME + Long.valueOf(mId).hashCode();
+		hash = hash * PRIME + mCreated.hashCode();
+		hash = hash * PRIME + mName.hashCode();
+		hash = hash * PRIME + mContents.hashCode();
+		if (mCourse != null)
+			hash = hash * PRIME + mCourse.hashCode();
+		return hash;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (!getClass().isInstance(other))
+			return false;
+		Note otherNote = (Note) other;
+		if (mId != otherNote.mId)
+			return false;
+		if (!mCreated.equals(otherNote.mCreated))
+			return false;
+		if (!mName.equals(otherNote.mName))
+			return false;
+		if (!mContents.equals(otherNote.mContents))
+			return false;
+		if (mCourse == null && otherNote.mCourse != null)
+			return false;
+		if (mCourse == null && otherNote.mCourse == null)
+			return true;
+		return mCourse.equals(otherNote.mCourse);
+	}
 
 }
