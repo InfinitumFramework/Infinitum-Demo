@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,22 +22,30 @@ import com.clarionmedia.infinitum.activity.annotation.InjectLayout;
 import com.clarionmedia.infinitum.orm.Session;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext.SessionType;
-import com.clarionmedia.infinitum.ui.widget.impl.DataBoundAdapter;
+import com.clarionmedia.infinitum.ui.widget.impl.DataBoundArrayAdapter;
 import com.clarionmedia.infinitumdemo.R;
 import com.clarionmedia.infinitumdemo.domain.Note;
 
-@InjectLayout(R.layout.activity_sqlite)
-public class SqliteActivity extends InfinitumListActivity {
+@InjectLayout(R.layout.activity_note_list)
+public class NoteListActivity extends InfinitumListActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		populateNotes();
 	}
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		Note note = (Note) getListAdapter().getItem(position);
+		Intent intent = new Intent(this, ViewNoteActivity.class);
+		intent.putExtra(ViewNoteActivity.EXTRA_NOTE_ID, note.getId());
+		startActivity(intent);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_sqlite, menu);
+		getMenuInflater().inflate(R.menu.activity_note_list, menu);
 		return true;
 	}
 
@@ -53,7 +63,8 @@ public class SqliteActivity extends InfinitumListActivity {
 	private void populateNotes() {
 		InfinitumOrmContext orm = getInfinitumContext().getChildContext(InfinitumOrmContext.class);
 		Session session = orm.getSession(SessionType.SQLITE);
-		DataBoundAdapter<Note> adapter = new DataBoundAdapter<Note>(orm, R.layout.layout_note_row, R.id.note_name, session.createCriteria(Note.class)) {
+		DataBoundArrayAdapter<Note> adapter = new DataBoundArrayAdapter<Note>(getInfinitumContext(), this, R.layout.layout_note_row, R.id.note_name,
+				session.createCriteria(Note.class)) {
 			public View getView(int position, View convertView, ViewGroup parent) {
 				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View rowView = inflater.inflate(R.layout.layout_note_row, parent, false);
@@ -88,7 +99,7 @@ public class SqliteActivity extends InfinitumListActivity {
 				session.open();
 				session.save(note);
 				session.close();
-				populateNotes();
+				//populateNotes();
 				dialog.dismiss();
 			}
 		}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
