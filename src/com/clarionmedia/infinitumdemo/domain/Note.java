@@ -25,7 +25,7 @@ public class Note {
 		return mId;
 	}
 
-	public void setmId(long id) {
+	public void setId(long id) {
 		mId = id;
 	}
 
@@ -33,7 +33,7 @@ public class Note {
 		return mCreated;
 	}
 
-	public void setmCreated(Date created) {
+	public void setCreated(Date created) {
 		mCreated = created;
 	}
 
@@ -69,8 +69,6 @@ public class Note {
 		hash = hash * PRIME + mCreated.hashCode();
 		hash = hash * PRIME + mName.hashCode();
 		hash = hash * PRIME + mContents.hashCode();
-		if (mCourse != null)
-			hash = hash * PRIME + mCourse.hashCode();
 		return hash;
 	}
 	
@@ -91,7 +89,7 @@ public class Note {
 			return false;
 		if (mCourse == null && otherNote.mCourse == null)
 			return true;
-		return mCourse.equals(otherNote.mCourse);
+		return true;
 	}
 
 }

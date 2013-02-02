@@ -18,7 +18,7 @@ public class Course {
 		mNotes = new ArrayList<Note>();
 	}
 
-	public long getmId() {
+	public long getId() {
 		return mId;
 	}
 
@@ -48,8 +48,6 @@ public class Course {
 		int hash = 7;
 		hash = hash * PRIME + Long.valueOf(mId).hashCode();
 		hash = hash * PRIME + mName.hashCode();
-		for (Note note : mNotes)
-			hash = hash * PRIME + note.hashCode();
 		return hash;
 	}
 
@@ -58,7 +56,7 @@ public class Course {
 		if (!getClass().isInstance(other))
 			return false;
 		Course otherCourse = (Course) other;
-		return mId == otherCourse.mId && mName.equals(otherCourse.mName) && mNotes.equals(otherCourse.mNotes);
+		return mId == otherCourse.mId && mName.equals(otherCourse.mName);
 	}
 
 }

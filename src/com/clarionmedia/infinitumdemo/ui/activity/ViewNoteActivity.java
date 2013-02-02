@@ -24,6 +24,9 @@ public class ViewNoteActivity extends InfinitumActivity {
 
 	@InjectView(R.id.note_name)
 	private TextView mNoteName;
+	
+	@InjectView(R.id.course_name)
+	private TextView mCourseName;
 
 	@InjectView(R.id.note_contents)
 	private TextView mNoteContents;
@@ -39,8 +42,14 @@ public class ViewNoteActivity extends InfinitumActivity {
 		mSession = orm.getSession(SessionType.SQLITE).open();
 		mNote = mSession.load(Note.class, noteId);
 		mNoteName.setText(mNote.getName());
+		mCourseName.setText(mNote.getCourse().getName());
 		mNoteContents.setText(mNote.getContents());
+	}
+	
+	@Override
+	public void onDestroy() {
 		mSession.close();
+		super.onDestroy();
 	}
 
 	@Override
@@ -65,9 +74,7 @@ public class ViewNoteActivity extends InfinitumActivity {
 		builder.setMessage("Are you sure you want to delete this note?")
 				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						mSession.open();
 						mSession.delete(mNote);
-						mSession.close();
 						dialog.dismiss();
 						finish();
 					}

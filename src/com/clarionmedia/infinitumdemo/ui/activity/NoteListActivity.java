@@ -14,25 +14,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.clarionmedia.infinitum.activity.InfinitumListActivity;
 import com.clarionmedia.infinitum.activity.annotation.InjectLayout;
 import com.clarionmedia.infinitum.orm.Session;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext.SessionType;
+import com.clarionmedia.infinitum.orm.criteria.criterion.Conditions;
 import com.clarionmedia.infinitum.ui.widget.impl.DataBoundArrayAdapter;
 import com.clarionmedia.infinitumdemo.R;
+import com.clarionmedia.infinitumdemo.domain.Course;
 import com.clarionmedia.infinitumdemo.domain.Note;
 
 @InjectLayout(R.layout.activity_note_list)
 public class NoteListActivity extends InfinitumListActivity {
+	
+	private Session mSession;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		InfinitumOrmContext orm = getInfinitumContext().getChildContext(InfinitumOrmContext.class);
+		mSession = orm.getSession(SessionType.SQLITE).open();
 		populateNotes();
+	}
+	
+	@Override
+	public void onDestroy() {
+		mSession.close();
+		super.onDestroy();
 	}
 	
 	@Override
@@ -61,16 +73,14 @@ public class NoteListActivity extends InfinitumListActivity {
 	}
 
 	private void populateNotes() {
-		InfinitumOrmContext orm = getInfinitumContext().getChildContext(InfinitumOrmContext.class);
-		Session session = orm.getSession(SessionType.SQLITE);
 		DataBoundArrayAdapter<Note> adapter = new DataBoundArrayAdapter<Note>(getInfinitumContext(), this, R.layout.layout_note_row, R.id.note_name,
-				session.createCriteria(Note.class)) {
+				mSession.createCriteria(Note.class)) {
 			public View getView(int position, View convertView, ViewGroup parent) {
 				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View rowView = inflater.inflate(R.layout.layout_note_row, parent, false);
 				Note note = getItem(position);
 				TextView textView = (TextView) rowView.findViewById(R.id.note_name);
-				textView.setText(note.getName());
+				textView.setText(note.getName() + " (" + note.getCourse().getName() + ")");
 				return rowView;
 			}
 		};
@@ -83,23 +93,22 @@ public class NoteListActivity extends InfinitumListActivity {
 		LayoutInflater inflater = getLayoutInflater();
 		View layout = inflater.inflate(R.layout.dialog_create_note, null);
 		final EditText noteName = (EditText) layout.findViewById(R.id.field_note_name);
-		Spinner courseName = (Spinner) layout.findViewById(R.id.field_course_name);
+		final EditText courseName = (EditText) layout.findViewById(R.id.field_course_name);
 		final EditText noteContents = (EditText) layout.findViewById(R.id.field_note_contents);
 		builder.setView(layout).setPositiveButton(R.string.save_note, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				String name = noteName.getText().toString().trim();
-				if (TextUtils.isEmpty(name))
+				String course = courseName.getText().toString().trim();
+				if (TextUtils.isEmpty(name)) {
+					Toast.makeText(NoteListActivity.this, "Note name is required", Toast.LENGTH_LONG).show();
 					return;
-				Note note = new Note();
-				note.setName(name);
-				note.setContents(noteContents.getText().toString());
-				note.setCourse(null); // TODO
-				Session session = getInfinitumContext().getChildContext(InfinitumOrmContext.class).getSession(SessionType.SQLITE);
-				session.open();
-				session.save(note);
-				session.close();
-				//populateNotes();
+				}
+				if (TextUtils.isEmpty(course)) {
+					Toast.makeText(NoteListActivity.this, "Course name is required", Toast.LENGTH_LONG).show();
+					return;
+				}
+				createNote(name, course, noteContents.getText().toString());
 				dialog.dismiss();
 			}
 		}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -108,6 +117,22 @@ public class NoteListActivity extends InfinitumListActivity {
 			}
 		});
 		return builder.create();
+	}
+	
+	private void createNote(String name, String courseName, String contents) {
+		Session session = getInfinitumContext().getChildContext(InfinitumOrmContext.class).getSession(SessionType.SQLITE);
+		session.open();
+		Note note = new Note();
+		note.setName(name);
+		note.setContents(contents);
+		Course course = session.createCriteria(Course.class).add(Conditions.eq("mName", courseName)).unique();
+		if (course == null) {
+			course = new Course();
+			course.setName(courseName);
+		}
+		note.setCourse(course);
+		session.save(note);
+		session.close();
 	}
 
 }
