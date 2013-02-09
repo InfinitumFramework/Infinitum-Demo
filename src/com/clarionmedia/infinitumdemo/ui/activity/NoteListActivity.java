@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.clarionmedia.infinitum.activity.InfinitumListActivity;
 import com.clarionmedia.infinitum.activity.annotation.InjectLayout;
+import com.clarionmedia.infinitum.di.annotation.Autowired;
 import com.clarionmedia.infinitum.orm.Session;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext;
 import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext.SessionType;
@@ -27,11 +28,15 @@ import com.clarionmedia.infinitum.ui.widget.impl.DataBoundArrayAdapter;
 import com.clarionmedia.infinitumdemo.R;
 import com.clarionmedia.infinitumdemo.domain.Category;
 import com.clarionmedia.infinitumdemo.domain.Note;
+import com.clarionmedia.infinitumdemo.util.NoteGenerator;
 
 @InjectLayout(R.layout.activity_note_list)
 public class NoteListActivity extends InfinitumListActivity {
-	
+
 	private Session mSession;
+
+	@Autowired
+	private NoteGenerator mNoteGenerator;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +45,13 @@ public class NoteListActivity extends InfinitumListActivity {
 		mSession = orm.getSession(SessionType.SQLITE).open();
 		populateNotes();
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		mSession.close();
 		super.onDestroy();
 	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Note note = (Note) getListAdapter().getItem(position);
@@ -67,14 +72,24 @@ public class NoteListActivity extends InfinitumListActivity {
 		case R.id.menu_add:
 			createNewNoteDialog().show();
 			return true;
+		case R.id.menu_random:
+			mSession.open();
+			Category random = mSession.createCriteria(Category.class).add(Conditions.eq("mName", "Random")).unique();
+			if (random == null) {
+				random = new Category();
+				random.setName("Random");
+			}
+			Note note = mNoteGenerator.generate(random);
+			mSession.save(note);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
 	private void populateNotes() {
-		DataBoundArrayAdapter<Note> adapter = new DataBoundArrayAdapter<Note>(getInfinitumContext(), this, R.layout.layout_note_row, R.id.note_name,
-				mSession.createCriteria(Note.class)) {
+		DataBoundArrayAdapter<Note> adapter = new DataBoundArrayAdapter<Note>(getInfinitumContext(), this, R.layout.layout_note_row,
+				R.id.note_name, mSession.createCriteria(Note.class)) {
 			public View getView(int position, View convertView, ViewGroup parent) {
 				LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				View rowView = inflater.inflate(R.layout.layout_note_row, parent, false);
@@ -118,7 +133,7 @@ public class NoteListActivity extends InfinitumListActivity {
 		});
 		return builder.create();
 	}
-	
+
 	private void createNote(String name, String categoryName, String contents) {
 		Session session = getInfinitumContext().getChildContext(InfinitumOrmContext.class).getSession(SessionType.SQLITE);
 		session.open();
@@ -132,7 +147,6 @@ public class NoteListActivity extends InfinitumListActivity {
 		}
 		note.setCategory(category);
 		session.save(note);
-		session.close();
 	}
 
 }
