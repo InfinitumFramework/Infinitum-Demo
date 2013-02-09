@@ -23,6 +23,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.clarionmedia.infinitumdemo.ui.activity.ViewNoteActivity" />
+        <activity android:name="com.clarionmedia.infinitumdemo.ui.activity.EditNoteActivity" />
     </application>
 
 </manifest>

@@ -25,7 +25,7 @@ import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext.SessionType;
 import com.clarionmedia.infinitum.orm.criteria.criterion.Conditions;
 import com.clarionmedia.infinitum.ui.widget.impl.DataBoundArrayAdapter;
 import com.clarionmedia.infinitumdemo.R;
-import com.clarionmedia.infinitumdemo.domain.Course;
+import com.clarionmedia.infinitumdemo.domain.Category;
 import com.clarionmedia.infinitumdemo.domain.Note;
 
 @InjectLayout(R.layout.activity_note_list)
@@ -80,7 +80,7 @@ public class NoteListActivity extends InfinitumListActivity {
 				View rowView = inflater.inflate(R.layout.layout_note_row, parent, false);
 				Note note = getItem(position);
 				TextView textView = (TextView) rowView.findViewById(R.id.note_name);
-				textView.setText(note.getName() + " (" + note.getCourse().getName() + ")");
+				textView.setText(note.getName() + " (" + note.getCategory().getName() + ")");
 				return rowView;
 			}
 		};
@@ -93,22 +93,22 @@ public class NoteListActivity extends InfinitumListActivity {
 		LayoutInflater inflater = getLayoutInflater();
 		View layout = inflater.inflate(R.layout.dialog_create_note, null);
 		final EditText noteName = (EditText) layout.findViewById(R.id.field_note_name);
-		final EditText courseName = (EditText) layout.findViewById(R.id.field_course_name);
+		final EditText categoryName = (EditText) layout.findViewById(R.id.field_category_name);
 		final EditText noteContents = (EditText) layout.findViewById(R.id.field_note_contents);
 		builder.setView(layout).setPositiveButton(R.string.save_note, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int id) {
 				String name = noteName.getText().toString().trim();
-				String course = courseName.getText().toString().trim();
+				String category = categoryName.getText().toString().trim();
 				if (TextUtils.isEmpty(name)) {
 					Toast.makeText(NoteListActivity.this, "Note name is required", Toast.LENGTH_LONG).show();
 					return;
 				}
-				if (TextUtils.isEmpty(course)) {
-					Toast.makeText(NoteListActivity.this, "Course name is required", Toast.LENGTH_LONG).show();
+				if (TextUtils.isEmpty(category)) {
+					Toast.makeText(NoteListActivity.this, "Category name is required", Toast.LENGTH_LONG).show();
 					return;
 				}
-				createNote(name, course, noteContents.getText().toString());
+				createNote(name, category, noteContents.getText().toString());
 				dialog.dismiss();
 			}
 		}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -119,18 +119,18 @@ public class NoteListActivity extends InfinitumListActivity {
 		return builder.create();
 	}
 	
-	private void createNote(String name, String courseName, String contents) {
+	private void createNote(String name, String categoryName, String contents) {
 		Session session = getInfinitumContext().getChildContext(InfinitumOrmContext.class).getSession(SessionType.SQLITE);
 		session.open();
 		Note note = new Note();
 		note.setName(name);
 		note.setContents(contents);
-		Course course = session.createCriteria(Course.class).add(Conditions.eq("mName", courseName)).unique();
-		if (course == null) {
-			course = new Course();
-			course.setName(courseName);
+		Category category = session.createCriteria(Category.class).add(Conditions.eq("mName", categoryName)).unique();
+		if (category == null) {
+			category = new Category();
+			category.setName(categoryName);
 		}
-		note.setCourse(course);
+		note.setCategory(category);
 		session.save(note);
 		session.close();
 	}

@@ -5,16 +5,16 @@ import java.util.List;
 
 import com.clarionmedia.infinitum.orm.annotation.OneToMany;
 
-public class Course {
+public class Category {
 
 	private long mId;
 
 	private String mName;
 
-	@OneToMany(className = "com.clarionmedia.infinitumdemo.domain.Note", column = "course", name = "courseNotes")
+	@OneToMany(className = "com.clarionmedia.infinitumdemo.domain.Note", column = "category", name = "categoryNotes")
 	private List<Note> mNotes;
 
-	public Course() {
+	public Category() {
 		mNotes = new ArrayList<Note>();
 	}
 
@@ -55,8 +55,8 @@ public class Course {
 	public boolean equals(Object other) {
 		if (!getClass().isInstance(other))
 			return false;
-		Course otherCourse = (Course) other;
-		return mId == otherCourse.mId && mName.equals(otherCourse.mName);
+		Category otherCategory = (Category) other;
+		return mId == otherCategory.mId && mName.equals(otherCategory.mName);
 	}
 
 }

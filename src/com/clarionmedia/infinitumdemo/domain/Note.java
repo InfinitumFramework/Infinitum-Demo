@@ -14,8 +14,8 @@ public class Note {
 
 	private String mContents;
 
-	@ManyToOne(className = "com.clarionmedia.infinitumdemo.domain.Course", column = "course", name = "noteCourse")
-	private Course mCourse;
+	@ManyToOne(className = "com.clarionmedia.infinitumdemo.domain.Category", column = "category", name = "noteCategory")
+	private Category mCategory;
 	
 	public Note() {
 		mCreated = new Date();
@@ -53,12 +53,12 @@ public class Note {
 		mContents = contents;
 	}
 
-	public Course getCourse() {
-		return mCourse;
+	public Category getCategory() {
+		return mCategory;
 	}
 
-	public void setCourse(Course course) {
-		mCourse = course;
+	public void setCategory(Category category) {
+		mCategory = category;
 	}
 	
 	@Override
@@ -85,9 +85,9 @@ public class Note {
 			return false;
 		if (!mContents.equals(otherNote.mContents))
 			return false;
-		if (mCourse == null && otherNote.mCourse != null)
+		if (mCategory == null && otherNote.mCategory != null)
 			return false;
-		if (mCourse == null && otherNote.mCourse == null)
+		if (mCategory == null && otherNote.mCategory == null)
 			return true;
 		return true;
 	}
