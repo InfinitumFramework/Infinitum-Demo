@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+    
+    <EditText 
+        android:id="@+id/field_note_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="@string/note_name"
+        android:layout_marginBottom="5dp"/>
+    
+    <EditText 
+        android:id="@+id/field_category_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:singleLine="true"
+        android:hint="@string/category_name"
+        android:layout_below="@id/field_note_name" />
+    
+    <EditText
+        android:id="@+id/field_note_contents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:gravity="top|left"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical"
+        android:layout_below="@id/field_category_name" />
+    
+    <LinearLayout 
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        
+        <Button 
+            android:id="@+id/cancel_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/cancel"/>
+        
+        <Button 
+            android:id="@+id/confirm_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@android:string/ok"/>
+        
+    </LinearLayout>
+
+</RelativeLayout>

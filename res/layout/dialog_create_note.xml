@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+    
+    <EditText 
+        android:id="@+id/field_note_name"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:singleLine="true"
+        android:hint="@string/note_name"
+        android:layout_marginBottom="5dp"
+        android:layout_weight="0.1"/>
+    
+    <EditText 
+        android:id="@+id/field_category_name"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0.1"
+        android:singleLine="true"
+        android:hint="@string/category_name" />
+    
+    <EditText
+        android:id="@+id/field_note_contents"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.8"
+        android:inputType="textMultiLine"
+        android:gravity="top|left"
+        android:scrollHorizontally="false"
+        android:scrollbars="vertical" />
+
+</LinearLayout>

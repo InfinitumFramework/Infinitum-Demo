@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE infinitum-configuration PUBLIC
+"-//Infinitum/Infinitum Configuration DTD 1.0//EN"
+"http://clarionmedia.com/infinitum/dtd/infinitum-configuration-1.0.dtd">
+
+<infinitum-configuration>
+
+    <application>
+        <property name="debug">true</property>
+        <property name="mode">annotations</property>
+        <property name="recycleCache">true</property>
+        <property name="methodCaching">true</property>
+    </application>
+    
+    <sqlite>
+        <property name="dbName">demo</property> 
+        <property name="dbVersion">1</property>
+        <property name="generateSchema">true</property>
+        <property name="autocommit">true</property>
+    </sqlite>
+    
+<!--     <rest>
+        <property name="messageType">json</property>
+        <property name="host">http://localhost/mywebservice</property>
+        <authentication strategy="token" header="true" enabled="true">
+            <property name="tokenName">token</property>
+            <property name="token">e489e8383c0ae2b7fe4dcf178330b4ac</property>
+        </authentication>
+    </rest> -->
+    
+    <domain>
+        <model resource="com.clarionmedia.infinitumdemo.domain.Category" />
+        <model resource="com.clarionmedia.infinitumdemo.domain.Note" />
+    </domain>
+    
+    <beans>
+        <component-scan base-package="com.clarionmedia.infinitumdemo" />  
+    </beans>
+    
+</infinitum-configuration>
