@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE infinitum-configuration PUBLIC
 "-//Infinitum/Infinitum Configuration DTD 1.0//EN"
-"http://clarionmedia.com/infinitum/dtd/infinitum-configuration-1.0.dtd">
+"http://infinitumframework.com/dtd/infinitum-configuration-1.0.dtd">
 
 <infinitum-configuration>
 
@@ -18,15 +18,6 @@
         <property name="generateSchema">true</property>
         <property name="autocommit">true</property>
     </sqlite>
-    
-<!--     <rest>
-        <property name="messageType">json</property>
-        <property name="host">http://localhost/mywebservice</property>
-        <authentication strategy="token" header="true" enabled="true">
-            <property name="tokenName">token</property>
-            <property name="token">e489e8383c0ae2b7fe4dcf178330b4ac</property>
-        </authentication>
-    </rest> -->
     
     <domain>
         <model resource="com.clarionmedia.infinitumdemo.domain.Category" />
