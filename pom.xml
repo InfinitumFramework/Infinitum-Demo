@@ -11,7 +11,7 @@
 
 	<properties>
 		<android.version>4.1.1.4</android.version>
-		<infinitum.version>1.0.3</infinitum.version>
+		<infinitum.version>1.0.5</infinitum.version>
 	</properties>
 
 	<dependencies>
@@ -19,70 +19,26 @@
 			<groupId>com.infinitumframework</groupId>
 			<artifactId>infinitum-core</artifactId>
 			<version>${infinitum.version}</version>
-			<exclusions>
-                <!-- Stax is not available on Android -->
-                <exclusion>
-                    <artifactId>stax</artifactId>
-                    <groupId>stax</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>stax-api</artifactId>
-                    <groupId>stax</groupId>
-                </exclusion>
-                <!-- Provided by Android -->
-                <exclusion>
-                    <artifactId>xpp3</artifactId>
-                    <groupId>xpp3</groupId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.infinitumframework</groupId>
 			<artifactId>infinitum-orm</artifactId>
 			<version>${infinitum.version}</version>
-			<exclusions>
-                <!-- Provided by Android -->
-                <exclusion>
-                    <artifactId>xpp3</artifactId>
-                    <groupId>xpp3</groupId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>com.infinitumframework</groupId>
 		    <artifactId>infinitum-aop</artifactId>
 		    <version>${infinitum.version}</version>
-		    <exclusions>
-                <!-- Provided by Android -->
-                <exclusion>
-                    <artifactId>xpp3</artifactId>
-                    <groupId>xpp3</groupId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>com.infinitumframework</groupId>
 		    <artifactId>infinitum-web</artifactId>
 		    <version>${infinitum.version}</version>
-		    <exclusions>
-                <!-- Provided by Android -->
-                <exclusion>
-                    <artifactId>xpp3</artifactId>
-                    <groupId>xpp3</groupId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>com.infinitumframework</groupId>
 		    <artifactId>infinitum-ui</artifactId>
-		    <version>1.0.1b-SNAPSHOT</version>
-		    <exclusions>
-                <!-- Provided by Android -->
-                <exclusion>
-                    <artifactId>xpp3</artifactId>
-                    <groupId>xpp3</groupId>
-                </exclusion>
-            </exclusions>
+		    <version>1.0.3b-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android</groupId>

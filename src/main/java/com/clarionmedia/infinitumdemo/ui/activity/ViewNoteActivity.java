@@ -7,16 +7,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.clarionmedia.infinitum.activity.InfinitumActivity;
 import com.clarionmedia.infinitum.activity.annotation.Bind;
 import com.clarionmedia.infinitum.activity.annotation.InjectLayout;
 import com.clarionmedia.infinitum.activity.annotation.InjectView;
-import com.clarionmedia.infinitum.orm.Session;
-import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext;
-import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext.SessionType;
+import com.clarionmedia.infinitum.di.annotation.Autowired;
 import com.clarionmedia.infinitumdemo.R;
 import com.clarionmedia.infinitumdemo.domain.Note;
+import com.clarionmedia.infinitumdemo.service.NoteService;
 
 @InjectLayout(R.layout.activity_view_note)
 public class ViewNoteActivity extends InfinitumActivity {
@@ -42,30 +40,23 @@ public class ViewNoteActivity extends InfinitumActivity {
 	@Bind("editNote")
 	private Button mEditNote;
 
+    @Autowired
+    private NoteService mNoteService;
+
 	private Note mNote;
-	private Session mSession;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		long noteId = getIntent().getLongExtra(EXTRA_NOTE_ID, -1);
-		InfinitumOrmContext orm = getInfinitumContext().getChildContext(InfinitumOrmContext.class);
-		mSession = orm.getSession(SessionType.SQLITE).open();
-		bindNote(mSession.load(Note.class, noteId));
-	}
-	
-	@Override
-	public void onDestroy() {
-		mSession.close();
-		super.onDestroy();
+		bindNote(mNoteService.getById(noteId));
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_EDIT_NOTE) {
 			if (resultCode == RESULT_OK) {
-				mSession.open();
-				bindNote(mSession.load(Note.class, mNote.getId()));
+                bindNote(mNoteService.getById(mNote.getId()));
 			}
 		}
 	}
@@ -75,8 +66,7 @@ public class ViewNoteActivity extends InfinitumActivity {
 		builder.setMessage("Are you sure you want to delete this note?")
 				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						mSession.open();
-						mSession.delete(mNote);
+						mNoteService.deleteNote(mNote);
 						dialog.dismiss();
 						finish();
 					}
