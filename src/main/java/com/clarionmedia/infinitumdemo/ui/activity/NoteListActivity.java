@@ -15,10 +15,6 @@ import android.widget.Toast;
 import com.clarionmedia.infinitum.activity.InfinitumListActivity;
 import com.clarionmedia.infinitum.activity.annotation.InjectLayout;
 import com.clarionmedia.infinitum.di.annotation.Autowired;
-import com.clarionmedia.infinitum.orm.Session;
-import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext;
-import com.clarionmedia.infinitum.orm.context.InfinitumOrmContext.SessionType;
-import com.clarionmedia.infinitum.orm.criteria.criterion.Conditions;
 import com.clarionmedia.infinitum.ui.widget.impl.DataBoundArrayAdapter;
 import com.clarionmedia.infinitumdemo.R;
 import com.clarionmedia.infinitumdemo.domain.Category;
@@ -128,18 +124,16 @@ public class NoteListActivity extends InfinitumListActivity {
     }
 
     private void createNote(String name, String categoryName, String contents) {
-        Session session = getInfinitumContext().getChildContext(InfinitumOrmContext.class).getSession(SessionType.SQLITE);
-        session.open();
         Note note = new Note();
         note.setName(name);
         note.setContents(contents);
-        Category category = session.createCriteria(Category.class).add(Conditions.eq("mName", categoryName)).unique();
+        Category category = mCategoryService.getByName(categoryName);
         if (category == null) {
             category = new Category();
             category.setName(categoryName);
         }
         note.setCategory(category);
-        session.save(note);
+        mNoteService.saveNote(note);
     }
 
 }
